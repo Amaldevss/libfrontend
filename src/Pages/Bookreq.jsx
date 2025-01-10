@@ -19,7 +19,7 @@ function Bookreq() {
 
 
   const handleClose = (close) => {
-    axios.delete('http://localhost:3001/bookrequest', { data: { _id: close._id } })
+    axios.delete('https://libbackend-1.onrender.com/bookrequest', { data: { _id: close._id } })
       .then(result => {
         console.log(result)
       })
