@@ -1,122 +1,258 @@
-import { Helmet } from 'react-helmet';
-import { FaBookBookmark } from "react-icons/fa6";
-import { useNavigate } from 'react-router-dom';
-import '../styles/styles.css';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import AdminNavbar from '../Components/AdminNavbar';
+import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import AdminNavbar from "../Components/AdminNavbar";
 
-function Users() {
-  const [users, setUsers] = useState([]); // State to store user data
-  const [error, setError] = useState(null); // State for error messages
-  const navigate = useNavigate();
+const AddBookPage = () => {
+    const [id, setId] = useState()
+    const [title, setTitle] = useState()
+    const [author, setAuthor] = useState()
+    const [genre, setGenre] = useState()
+    const [publicationYear, setPublicationYear] = useState()
+    const [isbn, setIsbn] = useState()
+    const [url, setUrl] = useState()
+  
+    const navigate = useNavigate()
+  
+    // const [formData, setFormData] = useState({
+    //   termsAccepted: false,
+    // });
 
-  useEffect(() => {
-    // Fetch users from the backend when the component mounts
-    axios.get('https://libbackend-1.onrender.com/users') // API endpoint
-      .then((response) => {
-        setUsers(response.data); // Set the users in state
-      })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-        setError('Failed to fetch users. Please try again later.'); // Set error message
-      });
-  }, []);
-
-  return (
-    <div>
-      <AdminNavbar />
-      <div style={pageStyle}>
-        <h1 style={{ textAlign: 'center', marginBottom: '20px' ,color:'red',fontFamily:'monospace'}}>User Management</h1>
-
-        {/* Display error message if present */}
-        {error && <div style={errorStyle}>{error}</div>}
-
-        <div style={tableContainerStyle}>
-          <table style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={tableHeader}>Name</th>
-                <th style={tableHeader}>Place</th>
-                <th style={tableHeader}>Age</th>
-                <th style={tableHeader}>Email</th>
-                <th style={tableHeader}>Password</th>
-                <th style={tableHeader}>Education</th>
-                <th style={tableHeader}>Contact</th>
-                <th style={tableHeader}>Phone</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.email} style={tableRow}>
-                  <td style={tableCol}>{user.name}</td>
-                  <td style={tableCol}>{user.place}</td>
-                  <td style={tableCol}>{user.age}</td>
-                  <td style={tableCol}>{user.email}</td>
-                  <td style={tableCol}>{user.password}</td>
-                  <td style={tableCol}>{user.education}</td>
-                  <td style={tableCol}>{user.contact}</td>
-                  <td style={tableCol}>{user.phone}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    const [errorMessage, setErrorMessage] = useState("")
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      axios.post('https://libbackend-1.onrender.com/add-books', {id,title,author,genre,publicationYear,isbn,url,rentalStatus:true})
+        .then(result => {
+          console.log(result)
+          navigate('/Admindashboard')
+        })
+        .catch(err => {
+          if (err.response && err.response.status === 400) {
+            setErrorMessage("book is already exists");
+          }
+          else {
+            setErrorMessage("An error occurred. Please try again.");
+          }
+          console.error(err)
+        })
+    }
+  
+    return (
+      <div>
+        <AdminNavbar/>
+      <div
+        style={{
+        minHeight: "120vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        background: "black",
+        paddingBottom: "3rem", // Adds spacing below the form for the footer
+      }}
+      >
+  
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "8rem", // Adjust spacing below the navbar
+            width: "100%",
+          }}
+        >
+          <form
+            onSubmit={handleSubmit}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              padding: "2.5rem",
+              backgroundColor: "#222",
+              borderRadius: "12px",
+              border: "1px solid white", // Set border thickness to 12px and color to white
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.3)",
+              width: "600px",
+              color: "#DDE9F2",
+              marginBottom: "2rem", // Adds some space between the form and the footer
+            }}
+            
+          >
+            <h1
+              style={{
+                textAlign: "center",
+                marginBottom: "2rem",
+                fontFamily: "monospace", // Futuristic font
+                color: "#ff0000", // Bright red
+                fontSize: "2.5rem", // Slightly larger size for impact
+                fontWeight: "700", // Bold weight
+                letterSpacing: "2px", // Adds a futuristic touch
+                textTransform: "uppercase", // Makes it look modern and clean
+              }}
+            >
+              Enter the Book Details
+            </h1>
+  
+  
+            <label>Id</label>
+            <input
+              type="text"
+              name="id"
+              // value={formData.name}
+              onChange={(e) => setId(e.target.value)}
+              required
+              style={{
+                padding: "0.8rem",
+              marginBottom: "1.5rem",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "6px",
+              color: "#fff",
+              fontSize: "1rem",
+              }}
+            />
+  
+            <label>Title</label>
+            <input
+              type="text"
+              name="title"
+              // value={formData.place}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              style={{
+                padding: "0.8rem",
+              marginBottom: "1.5rem",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "6px",
+              color: "#fff",
+              fontSize: "1rem",
+              }}
+            />
+  
+            <label>Author</label>
+            <input
+              type="text"
+              name="author"
+              // value={formData.age}
+              onChange={(e) => setAuthor(e.target.value)}
+              required
+              style={{
+                padding: "0.8rem",
+              marginBottom: "1.5rem",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "6px",
+              color: "#fff",
+              fontSize: "1rem",
+              }}
+            />
+  
+  
+            <label>Genre</label>
+            <input
+              type="text"
+              name="genre"
+              // value={formData.email}
+              onChange={(e) => setGenre(e.target.value)}
+              required
+              style={{
+                padding: "0.8rem",
+              marginBottom: "1.5rem",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "6px",
+              color: "#fff",
+              fontSize: "1rem",
+              }}
+            />
+  
+  
+            <label>PublicationYear</label>
+            <input
+              type="number"
+              name="publicationYear"
+              // value={formData.password}
+              onChange={(e) => setPublicationYear(e.target.value)}
+              required
+              style={{
+                padding: "0.8rem",
+              marginBottom: "1.5rem",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "6px",
+              color: "#fff",
+              fontSize: "1rem",
+              }}
+            />
+  
+            <label>Isbn</label>
+            <input
+              type="text"
+              name="isbn"
+              // value={formData.education}
+              onChange={(e) => setIsbn(e.target.value)}
+              style={{
+                padding: "0.8rem",
+              marginBottom: "1.5rem",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "6px",
+              color: "#fff",
+              fontSize: "1rem",
+              }}
+            />
+  
+  
+            <label>ImageUrl</label>
+            <input
+              type="text"
+              name="url"
+              // value={formData.contact}
+              onChange={(e) => setUrl(e.target.value)}
+              required
+              style={{
+                padding: "0.8rem",
+              marginBottom: "1.5rem",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "6px",
+              color: "#fff",
+              fontSize: "1rem",
+              }}
+            />
+  
+  
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "2rem",
+                color: "#A4BFCC",
+              }}
+            >
+            </div>
+  
+            <button
+              type="submit"
+              style={{
+                padding: "1rem",
+                border: "none",
+                marginTop: "1.5rem",
+                borderRadius: "6px",
+                backgroundColor: "#ff0000",
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "1.1rem",
+                cursor: "pointer",
+              }}
+            >
+              Enter
+            </button>
+            {errorMessage && (
+              <p style={{ color: "red", marginBottom: "1rem" }}>{errorMessage}</p>)}
+          </form>
         </div>
       </div>
-    </div>
-  );
-}
+      </div>
+    );
+  };
 
-// Page styles
-const pageStyle = {
-  fontFamily: "monospace",
-  background: "black",
-  minHeight: "100vh",
-  color: "#ECF0F1",
-  padding: "20px",
-};
-
-const tableContainerStyle = {
-  marginTop: "15px",
-  display: "flex",
-  justifyContent: "center",
-  width: "100%",
-};
-
-const tableStyle = {
-  width: "100%",
-  borderCollapse: "collapse",
-  backgroundColor: "white",
-  borderRadius: "15px",
-  overflow: "hidden",
-  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-};
-
-const tableHeader = {
-  backgroundColor: "#333",
-  color: "white",
-  padding: "10px",
-  textAlign: "center",
-  fontSize: "20px",
-  fontWeight: "bold",
-};
-
-const tableRow = {
-  borderBottom: "1px solid #ddd",
-};
-
-const tableCol = {
-  padding: "15px",
-  textAlign: "center",
-  color: "#333",
-  fontSize: "15px",
-};
-
-const errorStyle = {
-  color: "red",
-  textAlign: "center",
-  marginTop: "15px",
-  fontWeight: "bold",
-};
-
-export default Users;
+export default AddBookPage;
