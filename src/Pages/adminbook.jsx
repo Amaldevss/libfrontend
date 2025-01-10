@@ -15,7 +15,7 @@ function AdminBooks() {
 
     useEffect(() => {
         // Fetch books from the backend when the component mounts
-        axios.get('http://localhost:3001/books')  // API endpoint
+        axios.get('hhttps://libbackend-1.onrender.com/books')  // API endpoint
           .then((response) => {
             setBooks(response.data);  // Set the books in state
           })
